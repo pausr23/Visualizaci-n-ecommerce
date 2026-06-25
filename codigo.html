@@ -18,15 +18,15 @@
     --text-secondary: #8892b0;
     --text-muted: #4a5580;
     --accent-cyan:  #00d4ff;
-    --accent-violet:#7c3aed;
+    --accent-violet:#8b5cf6;
     --accent-pink:  #f43f5e;
     --accent-amber: #f59e0b;
-    --accent-green: #10b981;
-    --csat-5: #10b981;
-    --csat-4: #84cc16;
-    --csat-3: #f59e0b;
-    --csat-2: #f97316;
-    --csat-1: #ef4444;
+    --accent-green: #22c55e;
+    --csat-5: var(--accent-green);
+    --csat-4: var(--accent-cyan);
+    --csat-3: var(--accent-violet);
+    --csat-2: var(--accent-amber);
+    --csat-1: var(--accent-pink);
     --font-ui: 'Inter', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
   }
@@ -112,12 +112,66 @@
   .sidebar {
     background: var(--bg-panel);
     border-right: 1px solid var(--border);
-    padding: 20px 16px;
+    padding: 18px 16px 24px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 18px;
   }
+  .filter-dropdown {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .filter-dropdown summary {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    color: var(--text-primary);
+  }
+  .filter-dropdown summary::-webkit-details-marker,
+  .filter-dropdown summary::marker { display: none; }
+  .filter-dropdown summary:hover { background: rgba(255,255,255,0.03); }
+  .filter-dropdown .dropdown-summary-label { display: flex; flex-direction: column; gap: 4px; }
+  .filter-dropdown .dropdown-summary-label span:first-child {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .filter-dropdown .dropdown-summary-label span:last-child { font-size: 12px; color: var(--text-primary); }
+  .filter-dropdown .dropdown-hint { font-size: 10px; color: var(--text-muted); }
+  .filter-dropdown .dropdown-icon {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+    color: var(--accent-cyan);
+  }
+  .filter-dropdown[open] .dropdown-icon { transform: rotate(180deg); }
+
+  .filter-dropdown .dropdown-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 0 16px 16px;
+  }
+  .filter-dropdown.nested summary {
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .filter-dropdown.nested summary:hover { color: var(--text-primary); }
+  .filter-dropdown.nested summary::-webkit-details-marker,
+  .filter-dropdown.nested summary::marker { display: none; }
+  .filter-dropdown.nested .filter-group { display: flex; flex-direction: column; gap: 8px; padding: 8px 0 0; }
+
   .sidebar-section-label {
     font-size: 9px;
     font-weight: 700;
@@ -238,7 +292,7 @@
     line-height: 1;
   }
   .kpi-card.cyan .kpi-value { color: var(--accent-cyan); }
-  .kpi-card.violet .kpi-value { color: #a78bfa; }
+  .kpi-card.violet .kpi-value { color: var(--accent-violet); }
   .kpi-card.green .kpi-value { color: var(--accent-green); }
   .kpi-card.amber .kpi-value { color: var(--accent-amber); }
   .kpi-sub { font-size: 11px; color: var(--text-muted); }
@@ -271,9 +325,9 @@
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    background: rgba(124,58,237,0.12);
-    color: #a78bfa;
-    border: 1px solid rgba(124,58,237,0.25);
+    background: rgba(139,92,246,0.12);
+    color: var(--accent-violet);
+    border: 1px solid rgba(139,92,246,0.25);
     padding: 2px 7px;
     border-radius: 3px;
     flex-shrink: 0;
@@ -308,7 +362,11 @@
   .tooltip-val { font-family: var(--font-mono); font-weight: 600; color: var(--accent-cyan); }
 
   /* ── HEATMAP ── */
-  .heatmap-container { overflow-x: auto; }
+  .heatmap-container {
+    overflow-x: auto;
+    width: 100%;
+  }
+  .heatmap-container svg { width: 100%; display: block; }
   .heatmap-cell {
     cursor: pointer;
     transition: opacity 0.15s;
@@ -354,11 +412,16 @@
   }
 
   /* ── SCATTER ── */
+  #scatter-container {
+    width: 100%;
+    min-height: 380px;
+    position: relative;
+  }
   .scatter-dot {
-    transition: r 0.15s, opacity 0.15s;
+    transition: r 0.18s, opacity 0.18s, transform 0.18s;
     cursor: pointer;
   }
-  .scatter-dot:hover { r: 5; opacity: 1 !important; }
+  .scatter-dot:hover { opacity: 1 !important; transform: scale(1.2); }
 
   /* ── TREND LINE ── */
   .trend-line { stroke-dasharray: 5,3; animation: dash 20s linear infinite; }
@@ -429,25 +492,25 @@
       </div>
     </div>
 
-    <div>
-      <div class="sidebar-section-label">Categoría de Incidencia</div>
+    <details class="filter-dropdown nested open">
+      <summary>Categoría de Incidencia</summary>
       <div class="filter-group" id="filter-category"></div>
-    </div>
+    </details>
 
-    <div>
-      <div class="sidebar-section-label">Canal de Atención</div>
+    <details class="filter-dropdown nested open">
+      <summary>Canal de Atención</summary>
       <div class="filter-group" id="filter-channel"></div>
-    </div>
+    </details>
 
-    <div>
-      <div class="sidebar-section-label">Turno del Agente</div>
+    <details class="filter-dropdown nested open">
+      <summary>Turno del Agente</summary>
       <div class="filter-group" id="filter-shift"></div>
-    </div>
+    </details>
 
-    <div>
-      <div class="sidebar-section-label">Antigüedad del Agente</div>
+    <details class="filter-dropdown nested open">
+      <summary>Antigüedad del Agente</summary>
       <div class="filter-group" id="filter-tenure"></div>
-    </div>
+    </details>
 
     <button class="reset-btn" onclick="resetAllFilters()">↺ Restablecer filtros</button>
   </aside>
@@ -501,11 +564,11 @@
           <span class="chart-badge">Schneiderman Overview</span>
         </div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>≤ 3.5</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div>3.5–3.8</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>3.8–4.1</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#84cc16"></div>4.1–4.4</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>≥ 4.4</div>
+                  <div class="legend-item"><div class="legend-dot" style="background:#f43f5e"></div>≤ 3.5</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>3.5–3.8</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>3.8–4.1</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#00d4ff"></div>4.1–4.4</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>≥ 4.4</div>
         </div>
         <div class="heatmap-container" id="heatmap-container"></div>
       </div>
@@ -534,9 +597,9 @@
           <span class="chart-badge green">Treemap Jerárquico</span>
         </div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#ef4444"></div>CSAT bajo</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#f43f5e"></div>CSAT bajo</div>
           <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>CSAT medio</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>CSAT alto</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div>CSAT alto</div>
         </div>
         <div id="treemap-container"></div>
       </div>
@@ -584,27 +647,19 @@ const state = {
 // COLOR SCALES
 // ═══════════════════════════════════════════════════════
 const csatColor = (v) => {
-  if (v >= 4.4) return '#10b981';
-  if (v >= 4.1) return '#84cc16';
-  if (v >= 3.8) return '#f59e0b';
-  if (v >= 3.5) return '#f97316';
-  return '#ef4444';
+  if (v >= 4.4) return '#22c55e';
+  if (v >= 4.1) return '#00d4ff';
+  if (v >= 3.8) return '#8b5cf6';
+  if (v >= 3.5) return '#f59e0b';
+  return '#f43f5e';
 };
 
-const CAT_COLORS = {
-  'Returns': '#00d4ff',
-  'Order Related': '#7c3aed',
-  'Refund Related': '#f43f5e',
-  'Product Queries': '#f59e0b',
-  'Cancellation': '#10b981',
-  'Shopzilla Related': '#ec4899',
-  'Payments related': '#06b6d4',
-  'Feedback': '#8b5cf6',
-  'Offers & Cashback': '#eab308',
-  'App/website': '#64748b',
-  'Onboarding related': '#f97316',
-  'Others': '#6b7280',
-};
+const CATEGORY_PALETTE = ['#00d4ff', '#8b5cf6', '#22c55e', '#f59e0b', '#f43f5e'];
+const CAT_ORDER = ['Returns', 'Order Related', 'Refund Related', 'Product Queries', 'Cancellation', 'Shopzilla Related', 'Payments related', 'Feedback', 'Offers & Cashback', 'App/website', 'Onboarding related', 'Others'];
+const CAT_COLORS = CAT_ORDER.reduce((map, category, idx) => {
+  map[category] = CATEGORY_PALETTE[idx % CATEGORY_PALETTE.length];
+  return map;
+}, {});
 
 const getCatColor = c => CAT_COLORS[c] || '#8892b0';
 
@@ -792,12 +847,20 @@ function drawHeatmap() {
   const categories = [...new Set(hdata.map(d => d.category))].sort();
   const shifts = DATA.filters.shifts.filter(s => state.shifts.has(s));
 
-  const cellW = 76, cellH = 38, labelW = 130, topH = 28, pad = 8;
-  const W = labelW + shifts.length * cellW + pad;
+  const labelW = 140;
+  const topH = 28;
+  const pad = 12;
+  const minCellW = 72;
+  const containerWidth = Math.max(container.clientWidth, 600);
+  const availableWidth = containerWidth - labelW - pad * 2;
+  const cellW = Math.max(minCellW, Math.floor(availableWidth / shifts.length));
+  const cellH = 46;
+  const W = labelW + shifts.length * cellW + pad * 2;
   const H = topH + categories.length * cellH + pad;
 
   const svg = d3.select(container).append('svg')
-    .attr('width', W).attr('height', H);
+    .attr('width', W)
+    .attr('height', H);
 
   // Shift labels (top)
   shifts.forEach((sh, i) => {
@@ -827,12 +890,15 @@ function drawHeatmap() {
       const d = hdata.find(r => r.category === cat && r.shift === sh);
       const x = labelW + si * cellW;
       const isSelected = heatmapSelection && heatmapSelection.category === cat && heatmapSelection.shift === sh;
+      const cellPadding = 6;
 
       const cell = svg.append('rect')
         .attr('class', 'heatmap-cell' + (isSelected ? ' selected' : ''))
-        .attr('x', x + 2).attr('y', y + 2)
-        .attr('width', cellW - 4).attr('height', cellH - 4)
-        .attr('rx', 3)
+        .attr('x', x + cellPadding)
+        .attr('y', y + cellPadding)
+        .attr('width', cellW - cellPadding * 2)
+        .attr('height', cellH - cellPadding * 2)
+        .attr('rx', 6)
         .attr('fill', d ? csatColor(d.csat_avg) : '#1a1f35')
         .attr('opacity', d ? 0.88 : 0.3)
         .attr('stroke', isSelected ? '#fff' : 'none')
@@ -899,13 +965,17 @@ function drawScatter() {
   const extraShift = heatmapSelection ? heatmapSelection.shift : null;
   const sdata = getFilteredScatter(extraCat, extraShift);
 
-  const W = container.parentElement.clientWidth - 36 || 380;
-  const H = 260;
-  const margin = { top: 10, right: 16, bottom: 36, left: 44 };
+  const W = Math.max(container.clientWidth || container.parentElement.clientWidth || 420, 420);
+  const H = Math.max(container.clientHeight || 380, 380);
+  const margin = { top: 18, right: 18, bottom: 44, left: 52 };
   const iW = W - margin.left - margin.right;
   const iH = H - margin.top - margin.bottom;
 
-  const svg = d3.select(container).append('svg').attr('width', W).attr('height', H);
+  const svg = d3.select(container).append('svg')
+    .attr('width', W)
+    .attr('height', H)
+    .attr('viewBox', `0 0 ${W} ${H}`)
+    .attr('preserveAspectRatio', 'none');
   const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
   const x = d3.scaleLinear().domain([0, 200]).range([0, iW]);
@@ -925,11 +995,11 @@ function drawScatter() {
   // Axes
   g.append('g').attr('transform', `translate(0,${iH})`)
     .call(d3.axisBottom(x).ticks(6).tickFormat(d => d + 'm'))
-    .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke','#252c45'); ax.selectAll('text').attr('fill','#4a5580').attr('font-size',9); });
+    .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke','#252c45'); ax.selectAll('text').attr('fill','#cbd5e1').attr('font-size',10); });
 
   g.append('g')
     .call(d3.axisLeft(y).ticks(5))
-    .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke','#252c45'); ax.selectAll('text').attr('fill','#4a5580').attr('font-size',9); });
+    .call(ax => { ax.select('.domain').remove(); ax.selectAll('line').attr('stroke','#252c45'); ax.selectAll('text').attr('fill','#cbd5e1').attr('font-size',10); });
 
   // Axis labels
   g.append('text').attr('x', iW/2).attr('y', iH+32).attr('text-anchor','middle').attr('fill','#4a5580').attr('font-size',10).text('Tiempo de Atención (minutos)');
@@ -954,21 +1024,25 @@ function drawScatter() {
 
   // Points
   const sample = sdata.length > 600 ? sdata.filter((_,i)=>i%Math.ceil(sdata.length/600)===0) : sdata;
+  const pointRadius = 5;
+  const hoverRadius = 10;
   g.selectAll('.scatter-dot').data(sample).enter().append('circle')
     .attr('class','scatter-dot')
     .attr('cx', d=>x(d.handling_time)).attr('cy', d=>y(d.csat))
-    .attr('r', 3)
+    .attr('r', pointRadius)
     .attr('fill', d=>getCatColor(d.category))
-    .attr('opacity', 0.55)
+    .attr('stroke', '#0f172a')
+    .attr('stroke-width', 0.9)
+    .attr('opacity', 0.88)
     .on('mouseenter', function(event, d) {
       showTooltip(`<div class="tooltip-title">${d.category}</div>
         <div class="tooltip-row"><span>Tiempo</span><span class="tooltip-val">${d.handling_time} min</span></div>
         <div class="tooltip-row"><span>CSAT</span><span class="tooltip-val">${d.csat}/5</span></div>
         <div class="tooltip-row"><span>Canal</span><span class="tooltip-val">${d.channel}</span></div>
         <div class="tooltip-row"><span>Turno</span><span class="tooltip-val">${d.shift}</span></div>`, event);
-      d3.select(this).attr('r',5).attr('opacity',1);
+      d3.select(this).attr('r', hoverRadius).attr('opacity', 1);
     })
-    .on('mouseleave', function() { hideTooltip(); d3.select(this).attr('r',3).attr('opacity',0.55); });
+    .on('mouseleave', function() { hideTooltip(); d3.select(this).attr('r', pointRadius).attr('opacity', 0.88); });
 
   // Scatter legend
   const legendEl = document.getElementById('scatter-legend');
