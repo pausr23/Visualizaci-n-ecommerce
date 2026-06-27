@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecommerce - Visualización</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div class="dashboard">
+
+    <aside class="sidebar">
+        <h1>E-commerce Analytics</h1>
+        <h3>Filtros</h3>
+
+            <div class="filter-group">
+
+                <label>Rango de Fechas</label>
+
+                <select id="date-filter">
+                    <option>Todos</option>
+                </select>
+
+            </div>
+
+            <div class="filter-group">
+
+                <label>Categoría de Producto</label>
+
+                <select id="product-filter">
+                    <option>Todos</option>
+                </select>
+
+            </div>
+
+            <div class="filter-group">
+
+                <label>Canal de Atención</label>
+
+                <select id="channel-filter">
+                    <option>Todos</option>
+                </select>
+
+            </div>
+
+            <div class="filter-group">
+
+                <label>Ciudad</label>
+
+                <select id="city-filter">
+                    <option>Todos</option>
+                </select>
+
+            </div>
+
+            <div class="filter-group">
+
+                <label>Turno del Agente</label>
+
+                <select id="shift-filter">
+                    <option>Todos</option>
+                </select>
+
+            </div>
+
+        <button id="clear-filters">
+            Limpiar Filtros
+        </button>
+
+    </aside>
+
+    <main class="content">
+
+        <section class="kpis">
+            <div class="card">
+                <h3>Total de Incidencias</h3>
+                <h2 id="total-incidencias">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>CSAT Promedio</h3>
+                <h2 id="csat-promedio">0</h2>
+            </div>
+
+            <div class="card">
+                <h3>Tiempo Promedio</h3>
+                <h2 id="tiempo-promedio">0</h2>
+            </div>
+
+           <div class="card">
+                <h3>Ciudades Analizadas</h3>
+                <h2 id="ciudades-analizadas">0</h2>
+            </div>
+        </section>
+
+        <section class="top-charts">
+            <div class="chart-card">
+
+                <h2>Satisfacción por Categoría y Turno</h2>
+                <div class="heatmap"></div>
+
+            </div>
+
+            <div class="chart-card">
+
+                <h2>Tiempo de Atención vs. Satisfacción</h2>
+                <div class="scatter"></div>
+
+            </div>
+        </section>
+
+        <section class="bottom-chart">
+             <div class="chart-card">
+
+                <h2>Incidencias por Categoría de Producto</h2>
+                <div class="treemap"></div>
+
+            </div>
+         </section>
+
+    </main>
+
+</div>
+
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="js/dataLoader.js"></script>
+<script src="js/kpis.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/heatmap.js"></script>
+<script src="js/scatter.js"></script>
+<script src="js/treemap.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
