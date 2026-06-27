@@ -4,7 +4,7 @@ const currentFilters = {
 
     channel: "Todos",
 
-    city: "Todos",
+    city: [],
 
     shift: "Todos"
 
@@ -60,6 +60,12 @@ function initializeFilters(data){
     getUniqueValues(data, "Agent Shift")
     );
 
+    new TomSelect("#city-filter", {
+        plugins: ["remove_button"],
+        maxItems: null,
+        placeholder: "Buscar ciudades...",
+    });
+
 }
 
 function addFilterEvents() {
@@ -83,13 +89,15 @@ function addFilterEvents() {
         });
 
     document.getElementById("city-filter")
-        .addEventListener("change", function () {
+    .addEventListener("change", function () {
 
-            currentFilters.city = this.value;
+        currentFilters.city = Array.from(this.selectedOptions)
+            .map(option => option.value)
+            .filter(value => value !== "Todos");
 
-            applyFilters();
+        applyFilters();
 
-        });
+    });
 
     document.getElementById("shift-filter")
         .addEventListener("change", function () {
@@ -109,12 +117,12 @@ function resetFilters() {
 
     currentFilters.product = "Todos";
     currentFilters.channel = "Todos";
-    currentFilters.city = "Todos";
+    currentFilters.city = [];
     currentFilters.shift = "Todos";
 
     document.getElementById("product-filter").value = "Todos";
     document.getElementById("channel-filter").value = "Todos";
-    document.getElementById("city-filter").value = "Todos";
+    document.getElementById("city-filter").tomselect.clear();
     document.getElementById("shift-filter").value = "Todos";
 
     applyFilters();
@@ -135,8 +143,8 @@ function applyFilters() {
             d.channel_name === currentFilters.channel;
 
         const cityMatch =
-            currentFilters.city === "Todos" ||
-            d.Customer_City === currentFilters.city;
+            currentFilters.city.length === 0 ||
+            currentFilters.city.includes(d.Customer_City);
 
         const shiftMatch =
             currentFilters.shift === "Todos" ||

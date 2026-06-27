@@ -1,32 +1,34 @@
 function updateKPIs(data){
 
-    // Total de incidencias
     const totalIncidencias = data.length;
 
-    // CSAT promedio
-    const promedioCSAT = d3.mean(data, d => d["CSAT Score"]);
+    const promedioCSAT = d3.mean(
+        data.filter(d => d["CSAT Score"] != null),
+        d => d["CSAT Score"]
+    );
 
-    // Tiempo promedio de atención
-    const tiempoPromedio = d3.mean(data, d => d.connected_handling_time);
+    const tiempoPromedio = d3.mean(
+        data.filter(d => d.connected_handling_time != null),
+        d => d.connected_handling_time
+    );
 
-    // Registros analizados
-    const totalCiudades = getUniqueValues(
-        data,
-        "Customer_City"
-    ).length;
-
-    // Actualizar HTML
+    const totalCiudades = [
+        ...new Set(
+            data
+                .map(d => d.Customer_City)
+                .filter(city => city != null && city !== "")
+        )
+    ].length;
 
     document.getElementById("total-incidencias").textContent =
         totalIncidencias.toLocaleString();
 
     document.getElementById("csat-promedio").textContent =
-        promedioCSAT.toFixed(2);
+        promedioCSAT !== undefined ? promedioCSAT.toFixed(2) : "0.00";
 
     document.getElementById("tiempo-promedio").textContent =
-        tiempoPromedio.toFixed(1) + " min";
+        tiempoPromedio !== undefined ? tiempoPromedio.toFixed(1) + " min" : "Sin datos";
 
     document.getElementById("ciudades-analizadas").textContent =
         totalCiudades;
-
 }

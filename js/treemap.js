@@ -4,18 +4,10 @@ function drawTreemap(data){
         .selectAll("*")
         .remove();
 
-    const margin = {
-        top:20,
-        right:20,
-        bottom:20,
-        left:20
-    };
-
     const containerWidth =
-    document.querySelector(".treemap").clientWidth;
+        document.querySelector(".treemap").clientWidth;
 
     const width = containerWidth;
-    
     const height = 260;
 
     const svg = d3.select(".treemap")
@@ -23,47 +15,52 @@ function drawTreemap(data){
         .attr("width", width)
         .attr("height", height);
 
+    // Agrupar datos
     const grouped = d3.rollups(
 
-    data.filter(d => d.Product_category != null),
+        data.filter(d => d.Product_category != null),
 
-    v => v.length,
+        v => v.length,
 
-    d => d.Product_category
+        d => d.Product_category
 
     );
 
     const hierarchy = {
 
-    name:"root",
+        name: "root",
 
         children: grouped.map(d => ({
 
-            name:d[0],
-
-            value:d[1]
+            name: d[0],
+            value: d[1]
 
         }))
 
     };
 
-    console.log(hierarchy);
-
     const root = d3.hierarchy(hierarchy)
-    .sum(d => d.value);
-
-    console.log(root);
+        .sum(d => d.value);
 
     d3.treemap()
-    .size([width, height])
-    .padding(4)
-    (root);
-
-    console.log(root.leaves());
+        .size([width, height])
+        .padding(4)
+        (root);
 
     const color = d3.scaleOrdinal()
-    .domain(root.leaves().map(d => d.data.name))
-    .range(d3.schemeTableau10);
+        .domain(root.leaves().map(d => d.data.name))
+        .range(d3.schemeTableau10);
+
+    // Tooltip
+
+    d3.select(".tooltip").remove();
+
+    const tooltip = d3.select("body")
+        .append("div")
+        .attr("class","tooltip")
+        .style("opacity",0);
+
+    // Rectángulos
 
     svg.selectAll("rect")
         .data(root.leaves())
@@ -74,44 +71,73 @@ function drawTreemap(data){
         .attr("y", d => d.y0)
 
         .attr("width", d => d.x1 - d.x0)
-
         .attr("height", d => d.y1 - d.y0)
 
         .attr("fill", d => color(d.data.name))
 
-        .attr("stroke", "#071526")
+        .attr("stroke","#071526")
+        .attr("stroke-width",2)
 
-        .attr("stroke-width", 2);
+        .on("mouseover", function(event,d){
+
+            d3.select(this)
+                .attr("stroke","white")
+                .attr("stroke-width",3);
+
+            tooltip
+                .style("opacity",1)
+                .html(`
+                    <b>${d.data.name}</b><br>
+                    Casos: ${d.value}
+                `);
+
+        })
+
+        .on("mousemove", function(event){
+
+            tooltip
+                .style("left",(event.pageX+15)+"px")
+                .style("top",(event.pageY-20)+"px");
+
+        })
+
+        .on("mouseout", function(){
+
+            d3.select(this)
+                .attr("stroke","#071526")
+                .attr("stroke-width",2);
+
+            tooltip
+                .style("opacity",0);
+
+        });
+
+    // Texto
 
     svg.selectAll("text")
-    .data(root.leaves())
-    .enter()
-    .append("text")
+        .data(root.leaves())
+        .enter()
+        .append("text")
 
-    .attr("x", d => d.x0 + 8)
+        .attr("x", d => d.x0 + 8)
+        .attr("y", d => d.y0 + 18)
 
-    .attr("y", d => d.y0 + 18)
+        .text(d => {
 
-    .text(d => {
+            const w = d.x1 - d.x0;
+            const h = d.y1 - d.y0;
 
-        const width = d.x1 - d.x0;
+            if(w > 80 && h > 25){
+                return d.data.name;
+            }
 
-        if(width > 90){
+            return "";
 
-            return d.data.name;
+        })
 
-        }
-
-        return "";
-
-    })
-
-    .attr("fill","white")
-
-    .style("font-size","12px")
-
-    .style("font-weight","600")
-
-    .style("pointer-events","none");
+        .attr("fill","white")
+        .style("font-size","12px")
+        .style("font-weight","600")
+        .style("pointer-events","none");
 
 }
