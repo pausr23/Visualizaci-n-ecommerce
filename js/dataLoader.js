@@ -21,9 +21,9 @@ async function loadData() {
 function getUniqueValues(data, column){
 
     return [...new Set(
-
-        data.map(d => d[column])
-
-    )].sort();
+        data
+            .map(d => d[column])
+            .filter(value => value != null && value !== "")
+    )].sort((a, b) => a.localeCompare(b));
 
 }

@@ -60,10 +60,21 @@ function initializeFilters(data){
     getUniqueValues(data, "Agent Shift")
     );
 
-    new TomSelect("#city-filter", {
+   new TomSelect("#city-filter", {
         plugins: ["remove_button"],
+
         maxItems: null,
+
         placeholder: "Buscar ciudades...",
+
+        // Mostrar muchas opciones
+        maxOptions: 5000,
+
+        // Ordenar alfabéticamente
+        sortField: {
+            field: "text",
+            direction: "asc"
+        }
     });
 
 }

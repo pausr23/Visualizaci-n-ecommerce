@@ -78,6 +78,60 @@ function drawScatter(data){
         !isNaN(d["CSAT Score"])
     );
 
+    if(scatterData.length === 0){
+
+    const x = d3.scaleLinear()
+        .domain([0, 1])
+        .range([0, width]);
+
+    const y = d3.scaleLinear()
+        .domain([0.5, 5.5])
+        .range([height, 0]);
+
+    const xAxisGroup = g.append("g")
+        .attr("transform", `translate(0,${height})`);
+
+    const yAxisGroup = g.append("g");
+
+    xAxisGroup.call(
+        d3.axisBottom(x)
+            .ticks(5)
+    );
+
+    yAxisGroup.call(
+        d3.axisLeft(y)
+            .tickValues([1,2,3,4,5])
+    );
+
+    g.append("text")
+        .attr("x", width / 2)
+        .attr("y", height + 42)
+        .attr("text-anchor", "middle")
+        .style("font-size", "10px")
+        .style("fill", "#C7D1E0")
+        .text("Tiempo de atención conectado");
+
+    g.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("x", -height / 2)
+        .attr("y", -36)
+        .attr("text-anchor", "middle")
+        .style("font-size", "10px")
+        .style("fill", "#C7D1E0")
+        .text("CSAT Score");
+
+    g.append("text")
+        .attr("x", width / 2)
+        .attr("y", height / 2)
+        .attr("text-anchor", "middle")
+        .attr("fill", "#C7D1E0")
+        .style("font-size", "15px")
+        .style("font-weight", "500")
+        .text("No hay datos de tiempo para esta selección");
+
+        return;
+    }
+
     const sortedTimes = scatterData
         .map(d => d.connected_handling_time)
         .sort(d3.ascending);
@@ -129,11 +183,11 @@ function drawScatter(data){
         .domain([...new Set(scatterData.map(d => d.category))])
         .range(d3.schemeTableau10);
 
-    d3.select(".tooltip").remove();
+    d3.select(".scatter-tooltip").remove();
 
     const tooltip = d3.select("body")
         .append("div")
-        .attr("class", "tooltip")
+        .attr("class", "tooltip scatter-tooltip")
         .style("opacity", 0)
         .style("pointer-events", "none");
 
@@ -207,7 +261,9 @@ function drawScatter(data){
         .extent([[0, 0], [width, height]])
         .on("zoom", zoomed);
 
-    svg.call(zoom);
+    svgBackground
+        .style("pointer-events", "all")
+        .call(zoom);
 
     function zoomed(event){
 
