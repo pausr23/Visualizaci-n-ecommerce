@@ -95,9 +95,11 @@ function drawTreemap(data){
 
         .on("mousemove", function(event){
 
+            const tooltipWidth = tooltip.node().offsetWidth;
+
             tooltip
-                .style("left",(event.pageX+15)+"px")
-                .style("top",(event.pageY-20)+"px");
+                .style("left", (event.pageX - tooltipWidth - 15) + "px")
+                .style("top", (event.pageY - 20) + "px");
 
         })
 
