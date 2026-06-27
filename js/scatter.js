@@ -67,7 +67,7 @@ const y = d3.scaleLinear()
     svg.append("g")
     .call(
         d3.axisLeft(y)
-            .tickValues([1,2,3,4,5]) 
+            .tickValues([0,1,2,3,4,5]) 
             //Si quieres agregar medio punto 
             // en el eje pon ejemplo: 0.5
     );
