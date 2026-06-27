@@ -226,7 +226,6 @@ body{
 
 }
 
-
 /* SOLO para el scatter */
 
 .scatter{
@@ -265,4 +264,42 @@ body{
     display:flex;
     gap:8px;
     z-index:10;
+}
+
+.ts-control{
+    background:var(--panel2) !important;
+    border:1px solid var(--border) !important;
+    color:var(--text) !important;
+    border-radius:8px !important;
+    padding:8px !important;
+}
+
+.ts-control input{
+    color:var(--text) !important;
+}
+
+.ts-control input::placeholder{
+    color:var(--textSecondary) !important;
+}
+
+.ts-dropdown{
+    background:var(--panel2) !important;
+    border:1px solid var(--border) !important;
+    color:var(--text) !important;
+}
+
+.ts-dropdown .option{
+    color:var(--text) !important;
+    background:var(--panel2) !important;
+}
+
+.ts-dropdown .option.active{
+    background:var(--blue) !important;
+    color:white !important;
+}
+
+.ts-control .item{
+    background:#243653 !important;
+    color:white !important;
+    border:1px solid var(--border) !important;
 }
