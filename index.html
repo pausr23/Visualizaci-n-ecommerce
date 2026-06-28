@@ -16,15 +16,16 @@
 
     <aside class="sidebar">
         <h1>E-commerce Analytics</h1>
-        <h3>Filtros</h3>
+        <h3 class="sidebar-title">Filtros</h3>
 
             <div class="filter-group">
 
                 <label>Rango de Fechas</label>
 
-                <select id="date-filter">
-                    <option>Todos</option>
-                </select>
+                <div class="date-range">
+                    <input type="date" id="start-date">
+                    <input type="date" id="end-date">
+                </div>
 
             </div>
 
@@ -71,6 +72,14 @@
         <button id="clear-filters">
             Limpiar Filtros
         </button>
+
+        <div class="data-source">
+            <small>Fuente de datos</small>
+            <a href="https://www.kaggle.com/datasets/ddosad/ecommerce-customer-service-satisfaction/data"
+            target="_blank">
+            Ver dataset en Kaggle ↗
+            </a>
+        </div>
 
     </aside>
 

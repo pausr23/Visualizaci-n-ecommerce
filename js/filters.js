@@ -6,7 +6,11 @@ const currentFilters = {
 
     city: [],
 
-    shift: "Todos"
+    shift: "Todos", 
+
+     startDate: null,
+
+    endDate: null
 
 };
 
@@ -77,6 +81,8 @@ function initializeFilters(data){
         }
     });
 
+    initializeDateRange(data);
+
 }
 
 function addFilterEvents() {
@@ -119,6 +125,31 @@ function addFilterEvents() {
 
         });
 
+    document.getElementById("start-date")
+    .addEventListener("change", function(){
+
+        currentFilters.startDate = this.value
+            ? new Date(this.value)
+            : null;
+
+        applyFilters();
+
+        });
+
+    document.getElementById("end-date")
+        .addEventListener("change", function(){
+
+            if(this.value){
+                currentFilters.endDate = new Date(this.value);
+                currentFilters.endDate.setHours(23,59,59,999);
+            }else{
+                currentFilters.endDate = null;
+            }
+
+            applyFilters();
+
+        });
+
     document.getElementById("clear-filters")
          .addEventListener("click", resetFilters);
 
@@ -130,11 +161,15 @@ function resetFilters() {
     currentFilters.channel = "Todos";
     currentFilters.city = [];
     currentFilters.shift = "Todos";
+    currentFilters.startDate = null;
+    currentFilters.endDate = null;
 
     document.getElementById("product-filter").value = "Todos";
     document.getElementById("channel-filter").value = "Todos";
     document.getElementById("city-filter").tomselect.clear();
     document.getElementById("shift-filter").value = "Todos";
+    document.getElementById("start-date").value = "";
+    document.getElementById("end-date").value = "";
 
     applyFilters();
 
@@ -161,11 +196,23 @@ function applyFilters() {
             currentFilters.shift === "Todos" ||
             d["Agent Shift"] === currentFilters.shift;
 
+        const reportedDate = d["Issue_reported at"]
+            ? d3.timeParse("%d/%m/%Y %H:%M")(d["Issue_reported at"])
+            : null;
+
+        const dateMatch =
+            !reportedDate ||
+            (
+                (!currentFilters.startDate || reportedDate >= currentFilters.startDate) &&
+                (!currentFilters.endDate || reportedDate <= currentFilters.endDate)
+            );
+
         return (
             productMatch &&
             channelMatch &&
             cityMatch &&
-            shiftMatch
+            shiftMatch &&
+            dateMatch
         );
 
     });
@@ -178,4 +225,27 @@ function applyFilters() {
         "registros"
     );
 
+}
+
+function initializeDateRange(data){
+
+    const parseDate = d3.timeParse("%d/%m/%Y %H:%M");
+
+    const dates = data
+        .map(d => parseDate(d["Issue_reported at"]))
+        .filter(d => d != null);
+
+    const minDate = d3.min(dates);
+    const maxDate = d3.max(dates);
+
+    const formatDate = d3.timeFormat("%Y-%m-%d");
+
+    document.getElementById("start-date").min = formatDate(minDate);
+    document.getElementById("start-date").max = formatDate(maxDate);
+
+    document.getElementById("end-date").min = formatDate(minDate);
+    document.getElementById("end-date").max = formatDate(maxDate);
+
+    console.log("Fecha mínima:", formatDate(minDate));
+    console.log("Fecha máxima:", formatDate(maxDate));
 }

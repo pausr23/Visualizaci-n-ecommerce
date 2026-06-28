@@ -1,26 +1,26 @@
 /* Variables */
 :root {
-    --background:#071526;
+    --background:#07111F;
 
-    --panel:#111F36;
+    --panel:#101D33;
 
-    --panel2:#182742;
+    --panel2:#172641;
 
     --text:#FFFFFF;
 
     --textSecondary:#C7D1E0;
 
-    --border:#29374F;
+    --border:#263852;
 
-    --green:#70C040;
+    --green:#69B34C;
 
-    --yellow:#E2C84F;
+    --yellow:#E6C84F;
 
-    --orange:#D67C22;
+    --orange:#D98A35;
 
-    --red:#D74A4A;
+    --red:#D9534F;
 
-    --blue:#2D7EF7;
+    --blue:#3B82F6;
 }
 
 *{
@@ -134,6 +134,13 @@ body{
     height:240px;
 }
 
+.sidebar-title{
+    margin-top:5px;
+    margin-bottom:18px;
+    color:var(--text);
+    font-weight:600;
+}
+
 .filter-group{
     display:flex;
     flex-direction:column;
@@ -166,6 +173,11 @@ body{
     font-weight:600;
     margin-top:12px;
 
+}
+
+.sidebar button:hover{
+    background:#3F8CFF;
+    border-color:#5AA3FF;
 }
 
 .chart-card svg{
@@ -321,6 +333,96 @@ body{
 .ts-dropdown .option.active{
     background:var(--blue) !important;
     color:white !important;
+}
+
+/* Mejora visual de fechas */
+
+.date-range{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+}
+
+.date-range input{
+    width:100%;
+    padding:11px 12px;
+    border-radius:10px;
+    border:1px solid #31425E;
+    background:var(--panel2);
+    color:#FFFFFF;
+    font-family:'Poppins',sans-serif;
+    font-size:13px;
+    outline:none;
+    transition:.2s ease;
+}
+
+.date-range input:hover{
+    border-color:#3E5D86;
+}
+
+.date-range input:focus{
+    border-color:#2D7EF7;
+    box-shadow:0 0 0 3px rgba(45,126,247,.18);
+}
+
+.date-range input::-webkit-calendar-picker-indicator{
+    filter:invert(1);
+    opacity:.8;
+    cursor:pointer;
+}
+
+/* Mejora general de controles */
+
+.filter-group label{
+    color:#C7D1E0;
+    font-size:13px;
+    font-weight:500;
+}
+
+.filter-group select,
+.ts-control{
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+
+/* Tarjetas un poco más premium */
+
+.card,
+.chart-card{
+    box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+
+/* Bordes más suaves */
+
+.card,
+.chart-card,
+.sidebar{
+    border-color:#263852;
+}
+
+.data-source{
+    margin-top:24px;
+    padding-top:18px;
+    border-top:1px solid var(--border);
+}
+
+.data-source h4{
+    font-size:13px;
+    font-weight:600;
+    color:var(--textSecondary);
+    margin-bottom:8px;
+}
+
+.data-source a{
+    display:block;
+    font-size:12px;
+    color:var(--blue);
+    text-decoration:none;
+    line-height:1.5;
+    word-break:break-word;
+}
+
+.data-source a:hover{
+    text-decoration:underline;
 }
 
 /* =============================
