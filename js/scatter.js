@@ -180,8 +180,20 @@ function drawScatter(data){
         .text("CSAT Score");
 
     const color = d3.scaleOrdinal()
-        .domain([...new Set(scatterData.map(d => d.category))])
-        .range(d3.schemeTableau10);
+        .domain([
+            "Morning",
+            "Afternoon",
+            "Evening",
+            "Night",
+            "Split"
+        ])
+        .range([
+            "#2D7EF7", // Morning - Azul
+            "#4CAF50", // Afternoon - Verde
+            "#F39C12", // Evening - Naranja
+            "#E53935", // Night - Rojo
+            "#FFFFFF"  // Split - Blanco
+        ]);
 
     d3.select(".scatter-tooltip").remove();
 
@@ -213,7 +225,7 @@ function drawScatter(data){
         .attr("cx", d => x(d.connected_handling_time) + jitterX())
         .attr("cy", d => y(d["CSAT Score"]) + jitterY())
         .attr("r", 3)
-        .attr("fill", d => color(d.category))
+        .attr("fill", d => color(d["Agent Shift"]))
         .attr("opacity", 0.35)
         .on("mouseover", function(event, d){
 

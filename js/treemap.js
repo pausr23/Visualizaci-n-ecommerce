@@ -46,10 +46,15 @@ function drawTreemap(data){
         .size([width, height])
         .padding(4)
         (root);
+    const colors = [
+        "#8FC2FF", // Azul claro
+        "#2D7EF7", // Azul principal
+        "#0B4DBB"  // Azul oscuro
+    ];
 
     const color = d3.scaleOrdinal()
         .domain(root.leaves().map(d => d.data.name))
-        .range(d3.schemeTableau10);
+        .range(colors);
 
     // Tooltip
 
@@ -74,7 +79,7 @@ function drawTreemap(data){
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
 
-        .attr("fill", d => color(d.data.name))
+        .attr("fill", color)
 
         .attr("stroke","#071526")
         .attr("stroke-width",2)
