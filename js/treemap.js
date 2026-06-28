@@ -4,39 +4,49 @@ function drawTreemap(data){
         .selectAll("*")
         .remove();
 
-    const containerWidth =
-        document.querySelector(".treemap").clientWidth;
+    const container = d3.select(".treemap");
 
+    const wrapper = container
+        .append("div")
+        .style("width", "100%")
+        .style("height", "100%")
+        .style("display", "flex")
+        .style("flex-direction", "column")
+        .style("overflow", "hidden");
+
+    wrapper.append("p")
+        .attr("class", "chart-description")
+        .style("margin", "0 0 6px 0")
+        .style("font-size", "13px")
+        .style("color", "#C7D1E0")
+        .style("line-height", "1.3")
+        .style("flex", "0 0 auto")
+        .text("El tamaño de cada bloque representa la cantidad de casos registrados por categoría de producto. Las categorías con mayor área corresponden a un mayor volumen de consultas.");
+
+    const containerWidth = container.node().clientWidth;
     const width = containerWidth;
-    const height = 210;
 
-    const svg = d3.select(".treemap")
+    // Altura fija para que el treemap sea más grande
+    const height = 255;
+
+        const svg = wrapper
         .append("svg")
+        .style("flex", "1 1 auto")
         .attr("width", width)
         .attr("height", height);
 
-    // Agrupar datos
     const grouped = d3.rollups(
-
         data.filter(d => d.Product_category != null),
-
         v => v.length,
-
         d => d.Product_category
-
     );
 
     const hierarchy = {
-
         name: "root",
-
         children: grouped.map(d => ({
-
             name: d[0],
             value: d[1]
-
         }))
-
     };
 
     const root = d3.hierarchy(hierarchy)
@@ -46,17 +56,16 @@ function drawTreemap(data){
         .size([width, height])
         .padding(4)
         (root);
+
     const colors = [
-        "#8FC2FF", // Azul claro
-        "#2D7EF7", // Azul principal
-        "#0B4DBB"  // Azul oscuro
+        "#8FC2FF",
+        "#2D7EF7",
+        "#0B4DBB"
     ];
 
     const color = d3.scaleOrdinal()
         .domain(root.leaves().map(d => d.data.name))
         .range(colors);
-
-    // Tooltip
 
     d3.select(".treemap-tooltip").remove();
 
@@ -66,24 +75,17 @@ function drawTreemap(data){
         .style("opacity",0)
         .style("pointer-events","none");
 
-    // Rectángulos
-
     svg.selectAll("rect")
         .data(root.leaves())
         .enter()
         .append("rect")
-
         .attr("x", d => d.x0)
         .attr("y", d => d.y0)
-
         .attr("width", d => d.x1 - d.x0)
         .attr("height", d => d.y1 - d.y0)
-
-        .attr("fill", color)
-
+        .attr("fill", d => color(d.data.name))
         .attr("stroke","#071526")
         .attr("stroke-width",2)
-
         .on("mouseover", function(event,d){
 
             d3.select(this)
@@ -98,7 +100,6 @@ function drawTreemap(data){
                 `);
 
         })
-
         .on("mousemove", function(event){
 
             const tooltipWidth = tooltip.node().offsetWidth;
@@ -108,7 +109,6 @@ function drawTreemap(data){
                 .style("top", (event.pageY - 20) + "px");
 
         })
-
         .on("mouseout", function(){
 
             d3.select(this)
@@ -120,16 +120,12 @@ function drawTreemap(data){
 
         });
 
-    // Texto
-
     svg.selectAll("text")
         .data(root.leaves())
         .enter()
         .append("text")
-
         .attr("x", d => d.x0 + 8)
         .attr("y", d => d.y0 + 18)
-
         .text(d => {
 
             const w = d.x1 - d.x0;
@@ -142,7 +138,6 @@ function drawTreemap(data){
             return "";
 
         })
-
         .attr("fill","white")
         .style("font-size","12px")
         .style("font-weight","600")

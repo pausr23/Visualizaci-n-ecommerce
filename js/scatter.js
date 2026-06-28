@@ -7,6 +7,8 @@ function drawScatter(data){
     const container = d3.select(".scatter");
     const containerWidth = container.node().clientWidth || 520;
 
+    const descriptionHeight = 45;
+
     const margin = {
         top: 10,
         right: 15,
@@ -15,42 +17,32 @@ function drawScatter(data){
     };
 
     const width = containerWidth - margin.left - margin.right;
-    const height = 260;
+    const height = 215;
 
     const wrapper = container
         .append("div")
         .style("width", "100%")
         .style("height", "100%")
+        .style("display", "flex")
+        .style("flex-direction", "column")
         .style("overflow", "hidden")
         .style("position", "relative");
 
-    const controls = d3.select(".scatter")
-        .style("position", "relative")
-        .insert("div", ":first-child")
-        .attr("class", "scatter-controls")
-        .style("position", "absolute")
-        .style("top", "-52px")
-        .style("right", "0")
-        .style("display", "flex")
-        .style("gap", "8px")
-        .style("z-index", "10");
+    wrapper.append("p")
+        .attr("class", "chart-description")
+        .style("margin", "0 0 10px 0")
+        .style("font-size", "13px")
+        .style("color", "#C7D1E0")
+        .style("line-height", "1.4")
+        .style("flex", "0 0 auto")
+        .text("Cada punto representa un caso de soporte. La posición muestra la relación entre el tiempo de atención y el nivel de satisfacción (CSAT), mientras que el color identifica el turno del agente.");
 
-    controls.append("button")
-        .text("+")
-        .attr("class", "zoom-in");
-
-    controls.append("button")
-        .text("-")
-        .attr("class", "zoom-out");
-
-    controls.append("button")
-        .text("Reset")
-        .attr("class", "zoom-reset");
 
     const svgHeight = height + margin.top + margin.bottom;
 
     const svg = wrapper
         .append("svg")
+        .style("flex", "1 1 auto")
         .attr("width", "100%")
         .attr("height", svgHeight)
         .attr("viewBox", `0 0 ${containerWidth} ${svgHeight}`)
@@ -80,54 +72,42 @@ function drawScatter(data){
 
     if(scatterData.length === 0){
 
-    const x = d3.scaleLinear()
-        .domain([0, 1])
-        .range([0, width]);
+        const x = d3.scaleLinear().domain([0, 1]).range([0, width]);
+        const y = d3.scaleLinear().domain([0.5, 5.5]).range([height, 0]);
 
-    const y = d3.scaleLinear()
-        .domain([0.5, 5.5])
-        .range([height, 0]);
+        const xAxisGroup = g.append("g")
+            .attr("transform", `translate(0,${height})`);
 
-    const xAxisGroup = g.append("g")
-        .attr("transform", `translate(0,${height})`);
+        const yAxisGroup = g.append("g");
 
-    const yAxisGroup = g.append("g");
+        xAxisGroup.call(d3.axisBottom(x).ticks(5));
+        yAxisGroup.call(d3.axisLeft(y).tickValues([1,2,3,4,5]));
 
-    xAxisGroup.call(
-        d3.axisBottom(x)
-            .ticks(5)
-    );
+        g.append("text")
+            .attr("x", width / 2)
+            .attr("y", height + 42)
+            .attr("text-anchor", "middle")
+            .style("font-size", "10px")
+            .style("fill", "#C7D1E0")
+            .text("Tiempo de atención conectado");
 
-    yAxisGroup.call(
-        d3.axisLeft(y)
-            .tickValues([1,2,3,4,5])
-    );
+        g.append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -height / 2)
+            .attr("y", -36)
+            .attr("text-anchor", "middle")
+            .style("font-size", "10px")
+            .style("fill", "#C7D1E0")
+            .text("CSAT Score");
 
-    g.append("text")
-        .attr("x", width / 2)
-        .attr("y", height + 42)
-        .attr("text-anchor", "middle")
-        .style("font-size", "10px")
-        .style("fill", "#C7D1E0")
-        .text("Tiempo de atención conectado");
-
-    g.append("text")
-        .attr("transform", "rotate(-90)")
-        .attr("x", -height / 2)
-        .attr("y", -36)
-        .attr("text-anchor", "middle")
-        .style("font-size", "10px")
-        .style("fill", "#C7D1E0")
-        .text("CSAT Score");
-
-    g.append("text")
-        .attr("x", width / 2)
-        .attr("y", height / 2)
-        .attr("text-anchor", "middle")
-        .attr("fill", "#C7D1E0")
-        .style("font-size", "15px")
-        .style("font-weight", "500")
-        .text("No hay datos de tiempo para esta selección");
+        g.append("text")
+            .attr("x", width / 2)
+            .attr("y", height / 2)
+            .attr("text-anchor", "middle")
+            .attr("fill", "#C7D1E0")
+            .style("font-size", "15px")
+            .style("font-weight", "500")
+            .text("No hay datos de tiempo para esta selección");
 
         return;
     }
@@ -152,15 +132,8 @@ function drawScatter(data){
 
     const yAxisGroup = g.append("g");
 
-    xAxisGroup.call(
-        d3.axisBottom(x)
-            .ticks(6)
-    );
-
-    yAxisGroup.call(
-        d3.axisLeft(y)
-            .tickValues([1, 2, 3, 4, 5])
-    );
+    xAxisGroup.call(d3.axisBottom(x).ticks(6));
+    yAxisGroup.call(d3.axisLeft(y).tickValues([1, 2, 3, 4, 5]));
 
     g.append("text")
         .attr("x", width / 2)
@@ -180,20 +153,8 @@ function drawScatter(data){
         .text("CSAT Score");
 
     const color = d3.scaleOrdinal()
-        .domain([
-            "Morning",
-            "Afternoon",
-            "Evening",
-            "Night",
-            "Split"
-        ])
-        .range([
-            "#2D7EF7", // Morning - Azul
-            "#4CAF50", // Afternoon - Verde
-            "#F39C12", // Evening - Naranja
-            "#E53935", // Night - Rojo
-            "#FFFFFF"  // Split - Blanco
-        ]);
+        .domain(["Morning", "Afternoon", "Evening", "Night", "Split"])
+        .range(["#2D7EF7", "#4CAF50", "#F39C12", "#E53935", "#FFFFFF"]);
 
     d3.select(".scatter-tooltip").remove();
 
@@ -248,11 +209,9 @@ function drawScatter(data){
 
         })
         .on("mousemove", function(event){
-
             tooltip
                 .style("left", (event.pageX + 15) + "px")
                 .style("top", (event.pageY - 20) + "px");
-
         })
         .on("mouseout", function(){
 
@@ -281,33 +240,12 @@ function drawScatter(data){
 
         const newX = event.transform.rescaleX(x);
 
-        xAxisGroup.call(
-            d3.axisBottom(newX)
-                .ticks(6)
-        );
+        xAxisGroup.call(d3.axisBottom(newX).ticks(6));
 
         points
             .attr("cx", d => newX(d.connected_handling_time) + jitterX())
             .attr("cy", d => y(d["CSAT Score"]) + jitterY());
 
     }
-
-    wrapper.select(".zoom-in").on("click", function(){
-        svg.transition()
-            .duration(300)
-            .call(zoom.scaleBy, 1.5);
-    });
-
-    wrapper.select(".zoom-out").on("click", function(){
-        svg.transition()
-            .duration(300)
-            .call(zoom.scaleBy, 0.75);
-    });
-
-    wrapper.select(".zoom-reset").on("click", function(){
-        svg.transition()
-            .duration(300)
-            .call(zoom.transform, d3.zoomIdentity);
-    });
 
 }
