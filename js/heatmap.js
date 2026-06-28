@@ -45,21 +45,22 @@ function drawHeatmap(data){
 
     // Tamaños
 
-    const margin = {
-
-        top:20,
-        right:20,
-        bottom:60,
-        left:170
-
+   const margin = {
+        top: 35,
+        right: 25,
+        bottom: 45,
+        left: 135
     };
 
     const containerWidth =
-    document.querySelector(".heatmap").clientWidth;
+        document.querySelector(".heatmap").clientWidth;
 
-    const width = containerWidth - margin.left - margin.right;
+    const width = containerWidth - margin.left - margin.right - 20;
 
-    const height = 320;
+    const containerHeight =
+    document.querySelector(".heatmap").clientHeight;
+
+    const height = containerHeight - margin.top - margin.bottom;
 
     // SVG
 

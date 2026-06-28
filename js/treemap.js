@@ -8,7 +8,7 @@ function drawTreemap(data){
         document.querySelector(".treemap").clientWidth;
 
     const width = containerWidth;
-    const height = 260;
+    const height = 210;
 
     const svg = d3.select(".treemap")
         .append("svg")

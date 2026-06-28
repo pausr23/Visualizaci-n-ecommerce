@@ -15,7 +15,7 @@ function drawScatter(data){
     };
 
     const width = containerWidth - margin.left - margin.right;
-    const height = 280;
+    const height = 260;
 
     const wrapper = container
         .append("div")
